@@ -1,0 +1,273 @@
+:root {
+  color-scheme: light;
+  --bg: #f6f2ea;
+  --panel: #fff8ee;
+  --ink: #2d241b;
+  --muted: #6a5b4a;
+  --accent: #e26d35;
+  --accent-dark: #c45825;
+  --ring: rgba(226, 109, 53, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Source Han Serif SC", "Noto Serif SC", "STSong", "SimSun", serif;
+  background: radial-gradient(circle at 10% 10%, #fff5e5 0%, #f7efe2 40%, #f2e6d6 100%);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  margin-bottom: 32px;
+  animation: rise 0.8s ease-out;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+h1 {
+  font-size: clamp(32px, 4vw, 46px);
+  margin: 0 0 12px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.link {
+  display: inline-flex;
+  margin-top: 14px;
+  color: var(--accent-dark);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid rgba(102, 86, 68, 0.18);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 24px 60px rgba(90, 63, 37, 0.15);
+  animation: fadeIn 0.6s ease-out 0.1s both;
+}
+
+.form {
+  display: grid;
+  gap: 20px;
+}
+
+.field {
+  display: grid;
+  gap: 10px;
+}
+
+label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+input[type="text"],
+textarea,
+input[type="file"] {
+  width: 100%;
+  border: 1px solid rgba(102, 86, 68, 0.3);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #fffdf8;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+select {
+  width: 100%;
+  border: 1px solid rgba(102, 86, 68, 0.3);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #fffdf8;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.options {
+  display: grid;
+  gap: 10px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.primary {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 26px;
+  font-size: 16px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  width: fit-content;
+  box-shadow: 0 12px 24px var(--ring);
+}
+
+.primary:hover {
+  background: var(--accent-dark);
+}
+
+.secondary {
+  display: inline-flex;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(102, 86, 68, 0.3);
+  color: var(--ink);
+  text-decoration: none;
+  margin-top: 18px;
+}
+
+.error {
+  background: rgba(226, 109, 53, 0.12);
+  border: 1px solid rgba(226, 109, 53, 0.4);
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: var(--accent-dark);
+}
+
+.result {
+  display: grid;
+  gap: 16px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.progress-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(102, 86, 68, 0.15);
+  overflow: hidden;
+}
+
+#progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), #f3a060);
+  transition: width 0.4s ease;
+}
+
+.history {
+  display: grid;
+  gap: 18px;
+}
+
+.history-item h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.download {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(102, 86, 68, 0.3);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(0px);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.orb-1 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, #ffd6a3 0%, rgba(255, 214, 163, 0) 70%);
+  top: -80px;
+  right: -80px;
+}
+
+.orb-2 {
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, #f7b38f 0%, rgba(247, 179, 143, 0) 70%);
+  bottom: -60px;
+  left: -60px;
+}
+
+@media (max-width: 640px) {
+  .panel {
+    padding: 20px;
+  }
+
+  .primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .downloads {
+    flex-direction: column;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,27 @@
+[project]
+name = "douyin-delivery-tool"
+version = "0.1.0"
+description = "Douyin delivery tool: link/file -> ASR -> Word/Excel"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "requests>=2.31.0",
+  "ffmpeg-python>=0.2.0",
+  "openai>=1.40.0",
+  "dashscope>=1.20.0",
+  "fastapi>=0.111.0",
+  "uvicorn>=0.30.0",
+  "jinja2>=3.1.4",
+  "python-multipart>=0.0.9",
+  "playwright>=1.45.0",
+  "python-docx>=1.1.0",
+  "openpyxl>=3.1.2",
+  "python-dotenv>=1.0.1",
+  "tqdm>=4.66.4",
+]
+
+[project.scripts]
+douyin-delivery = "src.main:main"
+
+[tool.ruff]
+line-length = 100

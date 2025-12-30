@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>交付已生成</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">任务完成</p>
+        <h1>交付文件已生成</h1>
+        <p class="subtitle">批次：{{ batch }}</p>
+      </header>
+
+      <section class="panel">
+        <div class="result">
+          {% if exports %}
+          <p>点击下载：</p>
+          <div class="downloads">
+            {% for filename in exports %}
+            <a class="download" href="/download/{{ batch }}/{{ filename }}">{{ filename }}</a>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p>未选择导出格式，请返回重新选择。</p>
+          {% endif %}
+          <a class="secondary" href="/">返回继续</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

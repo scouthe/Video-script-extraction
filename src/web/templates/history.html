@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>历史批次</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">History</p>
+        <h1>历史批次</h1>
+        <p class="subtitle">最近生成的交付文件列表</p>
+        <a class="link" href="/">返回首页 →</a>
+      </header>
+
+      <section class="panel">
+        {% if batches %}
+        <div class="history">
+          {% for batch in batches %}
+          <div class="history-item">
+            <h3>{{ batch.name }}</h3>
+            <div class="downloads">
+              {% for filename in batch.files %}
+              <a class="download" href="/download/{{ batch.name }}/{{ filename }}">{{ filename }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p>暂无历史批次。</p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>任务进行中</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">任务进行中</p>
+        <h1>正在处理，请稍候</h1>
+        <p class="subtitle">任务编号：{{ job_id }}</p>
+      </header>
+
+      <section class="panel">
+        <div class="result">
+          <div id="progress-text">排队中...</div>
+          <div class="progress-bar">
+            <div id="progress-fill"></div>
+          </div>
+          <div id="progress-detail" class="muted"></div>
+          <div id="download-area"></div>
+          <a class="secondary" href="/">返回首页</a>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const jobId = "{{ job_id }}";
+      const progressText = document.getElementById("progress-text");
+      const progressDetail = document.getElementById("progress-detail");
+      const progressFill = document.getElementById("progress-fill");
+      const downloadArea = document.getElementById("download-area");
+
+      function renderProgress(data) {
+        if (!data || !data.progress) return;
+        const current = data.progress.current || 0;
+        const total = data.progress.total || 1;
+        const percent = Math.min(100, Math.round((current / total) * 100));
+        progressText.textContent = `${data.progress.message || "处理中"}（${current}/${total}）`;
+        progressDetail.textContent = data.progress.step || "";
+        progressFill.style.width = `${percent}%`;
+      }
+
+      function renderDownloads(data) {
+        if (data.status !== "done") return;
+        const batch = data.output_dir;
+        if (!batch || !data.exports || data.exports.length === 0) {
+          downloadArea.innerHTML = "<p>未生成可下载文件。</p>";
+          return;
+        }
+        progressText.textContent = "任务完成";
+        progressDetail.textContent = "已生成交付文件";
+        const links = data.exports
+          .map((name) => `<a class="download" href="/download/${batch}/${name}">${name}</a>`)
+          .join("");
+        downloadArea.innerHTML = `<p>下载文件：</p><div class="downloads">${links}</div>`;
+      }
+
+      async function poll() {
+        const response = await fetch(`/api/jobs/${jobId}`);
+        if (!response.ok) {
+          progressText.textContent = "无法获取状态，请稍后刷新。";
+          return;
+        }
+        const data = await response.json();
+        if (data.status === "error") {
+          progressText.textContent = "任务失败";
+          const detail = data.error_detail || data.error || "";
+          const raw = data.error_raw ? `\n\nRAW:\n${JSON.stringify(data.error_raw, null, 2)}` : "";
+          progressDetail.textContent = detail + raw;
+          return;
+        }
+        renderProgress(data);
+        if (data.status === "done") {
+          renderDownloads(data);
+          return;
+        }
+        setTimeout(poll, 2000);
+      }
+
+      poll();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>抖音交付工具</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">Douyin Delivery Tool</p>
+        <h1>一键生成交付文档</h1>
+        <p class="subtitle">链接或视频文件 → ASR → Word / Excel，给客户的交付更稳更快。</p>
+        <a class="link" href="/history">查看历史批次 →</a>
+      </header>
+
+      <section class="panel">
+        <form class="form" method="post" action="/run" enctype="multipart/form-data">
+          <div class="field">
+            <label for="name">交付名称</label>
+            <input id="name" name="name" type="text" placeholder="客户A_账号xxx" required />
+          </div>
+
+          <div class="field">
+            <label for="links">视频链接（每行一个）</label>
+            <textarea id="links" name="links" rows="6" placeholder="https://v.douyin.com/xxxxx"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="platform">视频平台</label>
+            <select id="platform" name="platform">
+              <option value="auto" selected>自动识别</option>
+              <option value="douyin">抖音</option>
+              <option value="bilibili">B站</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="uid">抖音账号 UID 或主页链接</label>
+            <input id="uid" name="uid" type="text" placeholder="仅抖音支持，UID 或 https://www.douyin.com/user/xxx" />
+          </div>
+
+          <div class="field">
+            <label for="count">最多采集数量（0 表示全部）</label>
+            <input id="count" name="count" type="number" min="0" value="0" />
+          </div>
+
+          <div class="field">
+            <label for="files">上传本地视频（可多选）</label>
+            <input id="files" name="files" type="file" multiple />
+          </div>
+
+          <div class="field options">
+            <span>导出格式</span>
+            <label class="check">
+              <input type="checkbox" name="export_docx" checked />
+              <span>Word (.docx)</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="export_xlsx" checked />
+              <span>Excel (.xlsx)</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="export_srt" />
+              <span>SRT 字幕</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="summary" />
+              <span>生成摘要</span>
+            </label>
+          </div>
+
+          {% if error %}
+          <div class="error">{{ error }}</div>
+          {% endif %}
+
+          <button class="primary" type="submit">开始生成</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
