@@ -24,3 +24,22 @@ def extract_audio(video_path: Path, audio_path: Path) -> Path:
         .run(capture_stdout=True, capture_stderr=True, overwrite_output=True)
     )
     return audio_path
+
+
+def split_audio(audio_path: Path, output_dir: Path, segment_seconds: int = 600) -> list[Path]:
+    _ensure_ffmpeg()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    pattern = output_dir / f"{audio_path.stem}_part_%03d.wav"
+    (
+        ffmpeg
+        .input(str(audio_path))
+        .output(
+            str(pattern),
+            f="segment",
+            segment_time=segment_seconds,
+            c="copy",
+            reset_timestamps=1,
+        )
+        .run(capture_stdout=True, capture_stderr=True, overwrite_output=True)
+    )
+    return sorted(output_dir.glob(f"{audio_path.stem}_part_*.wav"))

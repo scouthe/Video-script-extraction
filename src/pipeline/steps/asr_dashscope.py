@@ -1,4 +1,5 @@
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any, Optional
 import json
 from http import HTTPStatus
@@ -12,6 +13,7 @@ from openai import NotFoundError
 
 from ...utils.retry import with_retry
 from ...utils.text import clean_text
+from ...utils.ffmpeg import split_audio
 from ..models import Transcript
 
 
@@ -124,7 +126,7 @@ def _extract_multimodal_text(raw: dict) -> str:
     return ""
 
 
-def _transcribe_with_qwen_audio_asr(
+def _transcribe_with_qwen_audio_asr_single(
     audio_path: Path,
     api_key: str,
     model: str,
@@ -141,3 +143,31 @@ def _transcribe_with_qwen_audio_asr(
         )
     text = _extract_multimodal_text({"output": raw})
     return Transcript(text=clean_text(text), raw=raw if isinstance(raw, dict) else {"output": raw})
+
+
+def _transcribe_with_qwen_audio_asr(
+    audio_path: Path,
+    api_key: str,
+    model: str,
+    segment_seconds: int = 600,
+) -> Transcript:
+    try:
+        return _transcribe_with_qwen_audio_asr_single(audio_path, api_key, model)
+    except DashScopeASRError as exc:
+        message = str(exc)
+        if "file size is too large" not in message.lower():
+            raise
+
+    with TemporaryDirectory(prefix="audio_parts_") as tmp_dir:
+        parts = split_audio(audio_path, Path(tmp_dir), segment_seconds=segment_seconds)
+        if not parts:
+            raise DashScopeASRError("Audio split produced no parts")
+        texts: list[str] = []
+        raw_parts: list[dict] = []
+        for part in parts:
+            part_transcript = _transcribe_with_qwen_audio_asr_single(part, api_key, model)
+            if part_transcript.text:
+                texts.append(part_transcript.text)
+            raw_parts.append(part_transcript.raw if isinstance(part_transcript.raw, dict) else {})
+        combined_text = clean_text("\n".join(texts))
+        return Transcript(text=combined_text, raw={"parts": raw_parts})

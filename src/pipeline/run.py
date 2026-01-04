@@ -46,6 +46,20 @@ def run_pipeline(
     results: list[TaskResult] = []
     inputs_list = list(inputs)
     total = len(inputs_list)
+    print(
+        "[pipeline] inputs="
+        + str(total)
+        + " batch="
+        + batch_name
+        + " platform="
+        + str(platform)
+        + " asr_mode="
+        + settings.asr_mode
+        + " asr_model="
+        + settings.asr_model
+        + " audio_asr_model="
+        + settings.audio_asr_model
+    )
     for idx, value in enumerate(inputs_list, start=1):
         if on_progress:
             on_progress(step="parse", current=idx, total=total, message="解析输入")
@@ -54,6 +68,16 @@ def run_pipeline(
             settings.asr_mode in ("dashscope-url", "auto")
             and item.source_url
             and item.platform == "douyin"
+        )
+        print(
+            "[pipeline] item "
+            + str(idx)
+            + " platform="
+            + item.platform
+            + " use_source_url="
+            + str(use_source_url)
+            + " source_url="
+            + ("yes" if item.source_url else "no")
         )
         if not use_source_url:
             if on_progress:
@@ -74,6 +98,26 @@ def run_pipeline(
             mode = settings.asr_mode
             if item.platform in ("bilibili", "local"):
                 mode = "audio-asr"
+            if use_source_url and mode in ("auto", "dashscope-url"):
+                selected_mode = "dashscope-url"
+                selected_model = settings.asr_model
+                selected_route = "url"
+            elif mode in ("audio-asr", "qwen-audio-asr") or item.platform in ("bilibili", "local"):
+                selected_mode = "audio-asr"
+                selected_model = settings.audio_asr_model
+                selected_route = "local"
+            else:
+                selected_mode = mode
+                selected_model = settings.asr_model
+                selected_route = "local"
+            print(
+                "[pipeline] asr_mode_selected="
+                + selected_mode
+                + " model="
+                + selected_model
+                + " route="
+                + selected_route
+            )
             transcript = transcribe_audio(
                 audio_path=item.local_audio_path,
                 source_url=item.source_url if use_source_url else None,
