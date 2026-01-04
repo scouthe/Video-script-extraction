@@ -12,6 +12,12 @@
 - 账号主页采集（Playwright 滚动抓取）
 - 使用阿里云百炼平台api调用模型
 
+## 架构（面向对象）
+
+- 平台层：`PlatformResolver` + 各平台适配（抖音/哔哩哔哩/本地）
+- ASR 层：`ASRRouter` + 具体实现（DashScope URL / qwen-audio-asr / OpenAI compatible）
+- 管道层：`PipelineRunner` 负责编排下载、抽音频、识别、后处理与导出
+
 ## 环境准备
 
 - Python >= 3.10

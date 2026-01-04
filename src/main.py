@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 from .config import get_settings
-from .pipeline.run import run_pipeline
+from .pipeline.runner import PipelineFactory
 from .exporters.word_exporter import export_word
 from .exporters.excel_exporter import export_excel
 from .exporters.srt_exporter import export_srt
@@ -51,15 +51,15 @@ def main() -> None:
     output_root = Path(args.output_dir)
     tmp_root = Path(args.tmp_dir)
 
-    output_dir, results = run_pipeline(
+    runner = PipelineFactory(settings).create()
+    output_dir, results = runner.run(
         inputs=inputs,
-        settings=settings,
         batch_name=args.name,
         output_root=output_root,
         tmp_root=tmp_root,
         enable_summary=args.summary,
         use_cache=not args.no_cache,
-        platform=args.platform,
+        platform_hint=args.platform,
     )
 
     safe_name = sanitize_filename(args.name) or "delivery"

@@ -14,7 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from ..config import get_settings
-from ..pipeline.run import run_pipeline
+from ..pipeline.runner import PipelineFactory
 from ..exporters.word_exporter import export_word
 from ..exporters.excel_exporter import export_excel
 from ..exporters.srt_exporter import export_srt
@@ -66,16 +66,16 @@ def _worker() -> None:
                     },
                 )
 
-            output_dir, results = run_pipeline(
+            runner = PipelineFactory(settings).create()
+            output_dir, results = runner.run(
                 inputs=job["inputs"],
-                settings=settings,
                 batch_name=job["name"],
                 output_root=OUTPUT_ROOT,
                 tmp_root=TMP_ROOT,
                 enable_summary=job["summary"],
                 use_cache=True,
                 on_progress=_progress,
-                platform=job.get("platform"),
+                platform_hint=job.get("platform"),
             )
 
             exports: list[str] = []
